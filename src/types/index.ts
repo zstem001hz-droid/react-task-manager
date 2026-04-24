@@ -19,7 +19,7 @@ export interface TaskListProps {
   onDelete: (taskId: string) => void;
 }
 
-// TaskItemProps - props for the TaskFilter component
+// TaskItemProps - props for the TaskItem component
 // onFilterChange reports the selected filters up to the parent
 export interface TaskItemProps {
   task: Task;
@@ -27,7 +27,7 @@ export interface TaskItemProps {
   onDelete: (taskId: string) => void;
 }
 
-// TaskFilterProps - props for the taskFilter component
+// TaskFilterProps - props for the TaskFilter component
 // onFilterChange reports the selected filters up to the parent
 export interface TaskFilterProps {
   onFilterChange: (filters: {
