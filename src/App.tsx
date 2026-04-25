@@ -1,122 +1,124 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import React, { useState } from "react";
+import type { Task, TaskStatus } from "./types/index";
+import { TaskList } from "./components/TaskList/TaskList";
+import { TaskFilter } from "./components/TaskFilter/TaskFilter";
 
-function App() {
-  const [count, setCount] = useState(0)
+// Sample task data - `fetched` app data in a real-world app would come from an API
+// Each task match the Task interface
+const initialTasks: Task[] = [
+  {
+    id: "1",
+    title: "Deploy production hotfix",
+    description: "Critical bug affecting user login on mobile devices",
+    status: "in-progress",
+    priority: "high",
+    dueDate: "2026-04-29",
+  },
+  {
+    id: "2",
+    title: "Code review: payment module",
+    description: "Review PR #247 for new Stripe integration",
+    status: "in-progress",
+    priority: "high",
+    dueDate: "2026-04-26",
+  },
+  {
+    id: "3",
+    title: "Update API documentation",
+    description: "Document new endpoints added in v2.3 release",
+    status: "pending",
+    priority: "medium",
+    dueDate: "2026-08-22",
+  },
+  {
+    id: "4",
+    title: "Refactor authentication service",
+    description: "Move from JWT to session-based auth per security review",
+    status: "pending",
+    priority: "low",
+    dueDate: "2024-12-31",
+  },
+  {
+    id: "5",
+    title: "Set up staging environment",
+    description: "Configure Docker containers for QA testing",
+    status: "completed",
+    priority: "low",
+    dueDate: "2026-04-24",
+  },
+];
 
-  return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
-
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+// Filter state shape - both optional, undefined means show all
+interface FilterState {
+  status?: TaskStatus;
+  priority?: "low" | "medium" | "high";
 }
 
-export default App
+// App - root component, owns all state
+// Defines callbacks and passes them down to child components
+function App() {
+  // tasks state - the source of truth for all task data
+  const [tasks, setTasks] = useState<Task[]>(initialTasks);
+
+  // filters state - tracks active filter selections from TaskFilter
+  const [filters, setFilters] = useState<FilterState>({});
+
+  console.log("App rendered - tasks:", tasks.length, "filters:", filters);
+
+  // handleStatusChange - updates a single task's status immutably
+  // .map() finds matching task and returns updated version
+  const handleStatusChange = (taskId: string, newStatus: TaskStatus) => {
+    console.log(
+      "handleStatusChange - taskId:",
+      taskId,
+      "newStatus:",
+      newStatus,
+    );
+    setTasks((prev) =>
+      prev.map((task) =>
+        task.id === taskId ? { ...task, status: newStatus } : task,
+      ),
+    );
+  };
+
+  // handleDelete - removes a task from the array immutably
+  // uses .filter() to return new array without the deleted task
+  const handleDelete = (taskId: string) => {
+    console.log("handleDelete - taskId:", taskId);
+    setTasks((prev) => prev.filter((task) => task.id !== taskId));
+  };
+
+  // handleFilterChange - updates filter state when user changes dropdowns
+  const handleFilterChange = (newFilters: FilterState) => {
+    console.log("handleFilterChange - newFilters:", newFilters);
+    setFilters(newFilters);
+  };
+
+  // Filter tasks before passing to TaskList
+  // If filter value is undefined, it is skipped and becomes (show all)
+  const filteredTasks = tasks
+    .filter((task) => (filters.status ? task.status === filters.status : true))
+    .filter((task) =>
+      filters.priority ? task.priority === filters.priority : true,
+    );
+
+  console.log("filteredTasks count:", filteredTasks.length);
+
+  return (
+    <div style={{ padding: "2rem", maxWidth: "800px", margin: "0 auto" }}>
+      <h1 style={{ marginBottom: "1.5rem" }}>Task Manager</h1>
+
+      {/* TaskFilter - receives callback to report filter changes */}
+      <TaskFilter onFilterChange={handleFilterChange} />
+
+      {/* TaskList - receives filtered tasks and callbacks */}
+      <TaskList
+        tasks={filteredTasks}
+        onStatusChange={handleStatusChange}
+        onDelete={handleDelete}
+      />
+    </div>
+  );
+}
+
+export default App;
