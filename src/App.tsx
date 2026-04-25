@@ -1,3 +1,4 @@
+import { TaskForm } from "./components/TaskForm/TaskForm";
 import { useState } from "react";
 import type { Task, TaskStatus } from "./types/index";
 import { TaskList } from "./components/TaskList/TaskList";
@@ -94,6 +95,12 @@ function App() {
     setFilters(newFilters);
   };
 
+  // handleAddTask - adds a new task to the array immutably
+  const handleAddTask = (newTask: Task) => {
+    console.log("handleAddTask - newTask:", newTask);
+    setTasks((prev) => [...prev, newTask]);
+  };
+
   // Filter tasks before passing to TaskList
   // If filter value is undefined, it is skipped and becomes (show all)
   const filteredTasks = tasks
@@ -107,6 +114,9 @@ function App() {
   return (
     <div style={{ padding: "2rem", maxWidth: "800px", margin: "0 auto" }}>
       <h1 style={{ marginBottom: "1.5rem" }}>Task Manager</h1>
+
+      {/* TaskForm - toggle form for adding new tasks */}
+      <TaskForm onAddTask={handleAddTask} />
 
       {/* TaskFilter - receives callback to report filter changes */}
       <TaskFilter onFilterChange={handleFilterChange} />
