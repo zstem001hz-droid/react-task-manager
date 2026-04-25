@@ -35,3 +35,9 @@ export interface TaskFilterProps {
     priority?: "low" | "medium" | "high";
   }) => void;
 }
+
+// TaskFormProps - props for the TaskForm component
+// onAddTask callback passes new task up to App
+export interface TaskFormProps {
+  onAddTask: (task: Task) => void;
+}
