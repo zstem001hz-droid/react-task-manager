@@ -26,7 +26,7 @@ export const TaskItem: React.FC<TaskItemProps> = ({
   };
 
   // handleStatusChange - called when user selects a new status
-  // casts event.target.value to TaaskStatus type then calls parent callback
+  // casts event.target.value to TaskStatus type then calls parent callback
   const handleStatusChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const newStatus = event.target.value as TaskStatus;
     console.log("Status changed - TaskId:", task.id, "newStatus:", newStatus);
@@ -42,11 +42,11 @@ export const TaskItem: React.FC<TaskItemProps> = ({
   return (
     <div
       style={{
-        border: "1px sollid #e5e7eb",
+        border: "1px solid #e5e7eb",
         borderRadius: "8px",
         padding: "1rem",
         marginBottom: "0.75rem",
-        backgroundColor: statusColor[task.status],
+        backgroundColor: statusColors[task.status],
       }}
     >
       {/* Task header - title and priority badge */}
